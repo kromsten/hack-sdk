@@ -1,12 +1,12 @@
 import type { ChainData } from '../src/types';
-import { describe, beforeAll, expect } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { getChainData } from '../src/chain';
 
 
 describe('Setup tests', () => {
     let chainData : ChainData;
 
-    beforeAll(async () => {
+    test("Getting data", async () => {
         try {
             chainData = await getChainData();
         } catch (e: any) {
@@ -15,4 +15,7 @@ describe('Setup tests', () => {
         }
         expect(chainData).toBeDefined();
     })
+
+
+
 });

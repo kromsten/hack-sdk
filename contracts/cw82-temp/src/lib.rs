@@ -1,3 +1,5 @@
+#![allow(unused_imports, unused_variables)]
+
 pub mod contract;
 pub mod msg;
 pub mod execute;

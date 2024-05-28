@@ -1,5 +1,3 @@
-#![allow(unused_imports, unused_variables)]
-
 use std::borrow::BorrowMut;
 
 use cosmwasm_std::{to_json_binary, Binary, Deps, DepsMut, Env, MessageInfo, Reply, Response, StdError, StdResult};

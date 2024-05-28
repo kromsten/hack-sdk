@@ -1,6 +1,26 @@
 NODE ?= "neutron-node"
 COMPOSE ?= docker-compose
 
+ARCH = $(shell uname -m)
+
+# if archictecture is "arm64" is "cosmwasm/workspace-optimizer-arm64:0.14.0" else "cosmwasm/workspace-optimizer:0.14.0"
+OPTIMIZER := $(if $(filter arm64,$(ARCH)),cosmwasm/workspace-optimizer-arm64:0.14.0,cosmwasm/workspace-optimizer:0.14.0)
+
+
+compile:
+	@docker run --rm -v "$(pwd)":/code \
+  	--mount type=volume,source="$(basename "$(pwd)")_cache",target=/target \
+	--mount type=volume,source="$(BASE_DIR)_cache",target=/target \
+	--mount type=volume,source=registry_cache,target=/usr/local/cargo/registry  "$(OPTIMIZER)" 
+
+
+updest:
+	RUSTFLAGS='-C link-arg=-s' cargo build --release --target wasm32-unknown-unknown --lib
+	mkdir -p ./artifacts
+	cp ./target/wasm32-unknown-unknown/release/*.wasm ./artifacts
+	bun test
+
+
 
 build-neutron-node:
 	git clone git@github.com:neutron-org/neutron.git

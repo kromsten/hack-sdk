@@ -495,7 +495,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "cw82-template"
+name = "cw82-temp"
 version = "0.1.0"
 dependencies = [
  "common",
@@ -537,6 +537,23 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 1.0.109",
+]
+
+[[package]]
+name = "cw83-temp"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "cosmwasm-schema",
+ "cosmwasm-std",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "cw22",
+ "cw82",
+ "cw83",
+ "semver",
+ "thiserror",
 ]
 
 [[package]]
