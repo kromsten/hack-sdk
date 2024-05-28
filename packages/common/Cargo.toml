@@ -1,0 +1,20 @@
+[package]
+name = "common"
+version = "0.0.1"
+authors = [ "Kromsten <s@noreply.megarock.labs>" ]
+edition = "2021"
+
+
+[features]
+default = []
+
+[dependencies]
+cw82             = { workspace = true }
+cosmwasm-std     = { workspace = true }
+cosmwasm-schema  = { workspace = true }
+cw-ownable       = { workspace = true }
+cw-utils         = { workspace = true }
+thiserror        = { workspace = true }
+bech32           = { workspace = true }
+sha2             = { workspace = true }
+saa              = { workspace = true }
