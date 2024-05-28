@@ -67,7 +67,6 @@ pub struct FullInfoResponse {
 
 
 
-
 pub type ContractResponse = Response::<SignedCosmosMsgs>;
 pub type ContractResult = Result<ContractResponse, ContractError>;
 
