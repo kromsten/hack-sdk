@@ -14,7 +14,7 @@ const CONNECT_INTERVAL       = 3000;
 const CONNECT_MAX_ATTEMPTS   = 10;
 
 
-const gasPricer = (denom : string, amount?: string) => ({ amount: Decimal.fromUserInput(amount ?? "0.025", 100), denom });
+const gasPricer = (denom : string, amount?: string) => ({ amount: Decimal.fromUserInput(amount ?? "0.025", 6), denom } );
 const gasPrice  = gasPricer(FIRST_TOKEN!);
 
 
@@ -97,11 +97,12 @@ export const initClients = async (
                 Comet38Client.connect(FIRST_ENDPOINT!),
                 Comet38Client.connect(SECOND_ENDPOINT!)
             ]);
+
     
             [firstSigningClient, secondSigningClient] = await Promise.all([
                 SigningCosmWasmClient.createWithSigner(firstClient, firstWallet, { gasPrice }),
                 SigningCosmWasmClient.createWithSigner(secondClient, secondWallet, { 
-                    gasPrice: gasPricer(SECOND_TOKEN!, "200000000000") 
+                    gasPrice
                 }),
             ]);
     

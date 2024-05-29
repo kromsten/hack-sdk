@@ -1,5 +1,5 @@
 [package]
-name        = "cw83-temp"
+name        = "registry"
 version     = { workspace = true }
 edition     = { workspace = true }
 repository  = { workspace = true }
@@ -29,4 +29,5 @@ cw82                = { workspace = true }
 cw83                = { workspace = true }
 cw22                = { workspace = true }
 
+saa                 = { workspace = true }
 common              = { workspace = true }

@@ -13,8 +13,11 @@ import { State } from "cosmjs-types/ibc/core/connection/v1/connection";
 
 
 export const contractsToUpload = () : ContractName[] => {
-    // registry, account
-    return [  ]
+    return ["account", "registry"];
+}
+
+export const contractsToInstantiate = () : ContractName[] => {
+    return ["registry"];
 }
 
 
@@ -50,7 +53,12 @@ export const updatedContract = async (
     } catch (error) {
         throw new Error("Error uploading " +  contract.name + " contract: " + error);
     }
-    return await updatedContractAddress(client, sender, contract, chain);
+
+    if (contractsToInstantiate().includes(contract.name)) {
+        return await updatedContractAddress(client, sender, contract, chain);
+    } else {
+        return contract;
+    };
 }
 
 
@@ -100,6 +108,7 @@ export const checkedChainContracts = async (
     chain: ChainType
 ) : Promise<{ updated: boolean, contracts: Contract[] }> => {
     const codes = await client.getCodes();
+    const toInit = contractsToInstantiate();
     const checkedContracts : Contract[] = [];
     let updated = false;
 
@@ -109,7 +118,7 @@ export const checkedChainContracts = async (
         const name = mustContracts[i];
         const index = contracts.findIndex(x => x.name === name)
         const indexInMust = mustContracts.findIndex(x => x === name);
-        if (index === -1 && indexInMust >= i) {
+        if (index === -1 && indexInMust >= i && toInit.includes(name)) {
                 updated = true;
                 console.log(`Contract ${name} not found on chain. Uploading`);
                 checkedContracts.push(
@@ -128,7 +137,7 @@ export const checkedChainContracts = async (
             console.log("Migrating " + contract.name + " contract");
             await client.migrate(sender, contract.address, contract.code_id, {}, "auto")
             checkedContracts.push(contract);
-        } else if (!codes.find(x => x.id === contract.code_id)) {
+        } else if (!codes.find(x => x.id === contract.code_id) && toInit.includes(contract.name)) {
             updated = true;
             console.warn(`Code id for ${contract.name} not found on chain. Re-uploading`);
             checkedContracts.push(
@@ -141,7 +150,7 @@ export const checkedChainContracts = async (
 
                 checkedContracts.push(contract);
 
-            } else {
+            } else if (toInit.includes(contract.name)) {
                 console.warn(`Contract address for ${contract.name} not found on chain. Re-instantiating`);
                 updated = true;
                 checkedContracts.push(
@@ -151,7 +160,8 @@ export const checkedChainContracts = async (
         }
     }
 
-    for (const name of mustContracts) {
+    for (const name of contractsToInstantiate()) {
+
         if (!checkedContracts.find(x => x.name === name)) {
             updated = true;
             console.warn(`Contract ${name} not found on chain. Uploading`);

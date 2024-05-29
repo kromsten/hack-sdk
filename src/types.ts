@@ -65,3 +65,109 @@ export type GasConfig = {
         }
     }
 }
+
+
+export type Expiration = 
+    { at_height: number }  | 
+    { at_time: string }    | 
+    { never: {} };
+
+
+
+export type SessionConfig = {
+    generate_key?       :   boolean,
+    can_view?           :   boolean,
+    expires?            :   Expiration
+}
+
+
+export type AbstractionParams = {
+    session_config?                 :   SessionConfig,
+    feegrant_signer?                :   string,
+}
+
+
+export type Caller = {}
+
+export interface EvmCredential {
+    message     :   string
+    signature   :   string
+    signer      :   string
+}
+
+export interface Secp256K1 {
+    message     :   string;
+    signature   :   string;
+    pubkey      :   string;
+    hrp?        :   string;
+}
+
+export interface Ed25519 {
+    message     :   string;
+    signature   :   string;
+    pubkey      :   string;
+}
+
+
+export interface CosmosArbitrary {
+    message     :   string;
+    signature   :   string;
+    pubkey      :   string;
+    hrp?        :   string;
+}
+
+
+
+export type Credential = 
+    { caller: Caller } | 
+    { evm: EvmCredential } | 
+    { secp256k1: Secp256K1 } | 
+    { ed25519: Ed25519 } | 
+    { cosmos_arbitrary: CosmosArbitrary };
+
+
+
+export type CredentialData = {
+    credentials         :   Credential[],
+    with_caller?        :   boolean,
+    primary_index?      :   number
+}
+
+
+
+export type CosmosProxyMsg = {
+    abstraction_params          :       AbstractionParams,
+    auth_data                   :       CredentialData,
+    extension?                  :       {}
+}
+
+
+export type CreateAccountMsg = {
+    code_id         :       number,
+    chain_id        :       string,
+    //label?          :       string
+    msg             :       CosmosProxyMsg
+}
+
+
+
+export type AccountQuery = {
+    account_id?     :   string,
+    credential_id?  :   string,
+}
+
+
+export type RegistryInitMsg = {
+    allowed_code_ids         :       number[],
+    admin?                   :       string
+}
+
+export type RegistryExecuteMsg = 
+    { create_account: CreateAccountMsg } |
+    { extension: { msg: {} } }           
+
+
+export type RegistryQueryMsg = 
+    { account_info: {  query: AccountQuery  } }  |
+    { allowed_code_ids: {}  }    
+   

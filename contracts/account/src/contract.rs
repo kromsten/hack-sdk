@@ -11,6 +11,7 @@ use crate::{
     error::ContractError, execute, msg::{ContractResult, InstantiateMsg, MigrateMsg, QueryMsg} 
 };
 
+use saa::Verifiable;
 
 #[cfg(target_arch = "wasm32")]
 use crate::utils::query_if_registry;
@@ -21,7 +22,13 @@ pub const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(deps: DepsMut, env : Env, info : MessageInfo, msg : InstantiateMsg) -> ContractResult {
-    todo!()
+    msg.auth_data.verify()?;
+
+    return Ok(Response::new()
+        .add_attributes(vec![
+            ("action", "instantiate"),
+        ])
+    );
 }
 
 

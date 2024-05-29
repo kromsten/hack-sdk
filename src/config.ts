@@ -12,6 +12,7 @@ const GAS_CONFIG_PATH = `${CONFIG_FOLDER}/${GAS_CONFIG_NAME}.json`;
 const IBC_CONFIG_PATH = `${CONFIG_FOLDER}/${IBC_CONFIG_NAME}.json`;
 
 
+
 export const loadContractConfig = () : ContractConfig => {
     let file : string | Buffer;
     try {

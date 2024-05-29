@@ -14,7 +14,6 @@ pub struct InstantiateAccountMsg<T: Verifiable = CredentialData> {
 
 
 #[cw_serde]
-
 pub enum ExecuteAccountMsg<T = Empty,  E = Option<Empty>, A = Binary> {
     /// Proxy method for executing cosmos messages
     Execute { 
@@ -23,7 +22,7 @@ pub enum ExecuteAccountMsg<T = Empty,  E = Option<Empty>, A = Binary> {
  
     /// Registry only method to update the owner to the current NFT holder
     UpdateOwnership { 
-        /// Current NFT holder
+        /// New owner
         new_owner: String, 
         /// New account data
         new_account_data: Option<A> 

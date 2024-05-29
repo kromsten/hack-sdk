@@ -1,9 +1,9 @@
 
 import type { ExecuteResult, IndexedTx, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import type { ChainData, ChainQueryClient, ChainType, ContractName } from "./types";
+import type { ChainData, ChainQueryClient, ChainType, ContractName, RegistryInitMsg } from "./types";
 
 import { readFileSync, existsSync } from "fs"
-import { updateGasUsage } from "./config";
+import { loadContractConfig, updateGasUsage } from "./config";
 import { findConfigContract, updateCodeId, updateContractAddress } from "./config";
 
 
@@ -15,21 +15,35 @@ const CONTRACT_FOLDER = "artifacts/"
 
 
 export const nameToFilePath = (contract_name: ContractName) => {
-    const fileName = contract_name;
+    let fileName : string;
+
+    if (contract_name == "registry") {
+        fileName = "cw83_temp";
+    } else if (contract_name == "account") {
+        fileName = "cw82_temp";
+    } else {
+        fileName = contract_name;
+    }
     return CONTRACT_FOLDER + fileName + ".wasm";
 }
 
 
 export const nameToInitMsg = async (
     name            : ContractName, 
-    _chain           : ChainType,
-    _attempt         : number = 1
+    chain           : ChainType,
+    _attempt        : number = 1
 )   => {
 
     if (name == "account") {
+
         return {}
+
     } else if (name == "registry") {
-        return {}
+
+        const msg : RegistryInitMsg = {
+            allowed_code_ids: [findConfigContract("account", chain).code_id],
+        }
+        return msg
     } else {
         throw new Error("Can't get instantiate message for " + name + " contract");
     }
@@ -52,6 +66,7 @@ export const uploadContract = async (
     console.log("Uploading contract", name + ".wasm to", chain, "chain");
     
     const wasm_byte_code = readFileSync(wasmPath) as Uint8Array;
+
     try {
         const res = await client.upload(sender, wasm_byte_code, "auto")
         console.log("Successfull uploaded", name, "with code id", res.codeId, "to", chain, "chain. Used gas:", res.gasUsed, "\n");
@@ -124,8 +139,8 @@ export const executeContract = async (
     client : SigningCosmWasmClient,
     sender : string,
     contract: ContractName,
-    msg: object,
     chain: ChainType,
+    msg: object,
 ) : Promise<ExecuteResult> => {
 
     const contractInfo = findConfigContract(contract, chain);
@@ -165,7 +180,6 @@ export function queryBothChainsWithArg<T, A> (
         querier(chainData.secondQueryClient, "second", secondArg)
     ]);
 }
-
 
 
 

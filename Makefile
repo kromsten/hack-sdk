@@ -18,6 +18,7 @@ updest:
 	RUSTFLAGS='-C link-arg=-s' cargo build --release --target wasm32-unknown-unknown --lib
 	mkdir -p ./artifacts
 	cp ./target/wasm32-unknown-unknown/release/*.wasm ./artifacts
+	rm ./configs/contract_config.json
 	bun test
 
 

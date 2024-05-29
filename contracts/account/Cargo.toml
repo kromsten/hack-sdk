@@ -1,5 +1,5 @@
 [package]
-name        = "cw82-temp"
+name        = "account"
 version     = { workspace = true }
 edition     = { workspace = true }
 repository  = { workspace = true }

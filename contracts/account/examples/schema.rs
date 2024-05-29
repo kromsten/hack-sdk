@@ -1,12 +1,12 @@
 use cosmwasm_schema::write_api;
-use cw83_temp::msg::{ExecuteMsg, InstantiateMsg, MigrateMsg, QueryMsg};
+use account::msg::{ExecuteMsg, InstantiateMsg, MigrateMsg, QueryMsg};
 
 fn main() {
     write_api! {
-        name: "cw83_temp",
+        name: "cw82_template",
         instantiate: InstantiateMsg,
-        query: QueryMsg,
         execute: ExecuteMsg,
         migrate: MigrateMsg,
+        query: QueryMsg,
     }
 }

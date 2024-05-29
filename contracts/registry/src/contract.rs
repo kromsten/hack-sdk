@@ -6,11 +6,10 @@ use cw82::Cw82Contract;
 use cw83::CREATE_ACCOUNT_REPLY_ID;
 
 use crate::{
-    error::ContractError, 
-    msg::{ExecuteMsg, InstantiateMsg, MigrateMsg, QueryMsg}, 
+    creation::{create_proxy_account, create_proxy_account_reply}, error::ContractError, msg::{ExecuteMsg, InstantiateMsg, MigrateMsg, QueryMsg}, query::query_account_info, state::{ACCOUNT_INDEX, ALLOWED_CODE_IDS} 
 };
 
-pub const CONTRACT_NAME: &str = "crates:cw83-token-account-registry";
+pub const CONTRACT_NAME: &str = "crates:registry";
 pub const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 
@@ -29,6 +28,8 @@ pub fn instantiate(deps: DepsMut, _ : Env, _ : MessageInfo, msg : InstantiateMsg
         ]
     )?;
 
+    ACCOUNT_INDEX.save(deps.storage, &0)?;
+    ALLOWED_CODE_IDS.save(deps.storage, &msg.allowed_code_ids)?;
     // REGISTRY_PARAMS.save(deps.storage, &msg.params)?;
 
     Ok(Response::new()
@@ -43,60 +44,35 @@ pub fn instantiate(deps: DepsMut, _ : Env, _ : MessageInfo, msg : InstantiateMsg
 pub fn execute(deps: DepsMut, env : Env, info : MessageInfo, msg : ExecuteMsg) 
 -> Result<Response, ContractError> {
 
-    todo!()
-
-    /* match msg {
+    match msg {
         ExecuteMsg::CreateAccount(
-            create
-        ) => create_account(
+            msg
+        ) => create_proxy_account(
             deps, 
             env,
             info,
-            create.chain_id,
-            create.code_id, 
-            create.msg.token_info, 
-            create.msg.account_data,
-            create.msg.create_for,
-            false
+            msg
         ),
-    } */
-
-}
-
-
-#[cfg_attr(not(feature = "library"), entry_point)]
-pub fn reply(deps: DepsMut, _ : Env, msg : Reply) 
--> Result<Response, ContractError> {
-    
-    if msg.id == CREATE_ACCOUNT_REPLY_ID {
-
-        let res = cw_utils::parse_reply_instantiate_data(msg)?;
-
-        let addr = res.contract_address;
-        let ver_addr = deps.api.addr_validate(addr.as_str())?;
-
-        Cw82Contract(ver_addr).supports_interface(&deps.querier)?;
-
-        Ok(Response::default())
-    
-    } else {
-        Err(ContractError::Unauthorized {})
-    } 
-
+    }
 }
 
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(deps: Deps, _ : Env, msg: QueryMsg) -> StdResult<Binary> {
-    todo!()
-    /* match msg {
+    match msg {
         QueryMsg::AccountInfo(
             acc_query
-        ) => to_json_binary(&account_info(deps, acc_query.query)?),
-    } */
+        ) => query_account_info(deps, acc_query.query),
+    }
 }
 
 
+
+#[cfg_attr(not(feature = "library"), entry_point)]
+pub fn reply(deps: DepsMut, env : Env, msg : Reply) 
+-> Result<Response, ContractError> {
+    create_proxy_account_reply(deps, env, msg)
+}
 
 
 #[cfg_attr(not(feature = "library"), entry_point)]

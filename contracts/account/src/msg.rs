@@ -1,4 +1,4 @@
-use common::account::{ExecuteAccountMsg, InstantiateAccountMsg, MigrateAccountMsg, QueryAccountMsg};
+use common::{account::{ExecuteAccountMsg, InstantiateAccountMsg, MigrateAccountMsg, QueryAccountMsg}, CreateAccountMsg, ProxyData};
 use cosmwasm_std::{Addr, Binary, CosmosMsg, CustomMsg, Empty, Response, Timestamp};
 use cosmwasm_schema::cw_serde;
 use saa::{CredentialData, CredentialId};
@@ -70,7 +70,10 @@ pub struct FullInfoResponse {
 pub type ContractResponse = Response::<SignedCosmosMsgs>;
 pub type ContractResult = Result<ContractResponse, ContractError>;
 
-pub type InstantiateMsg = InstantiateAccountMsg<CredentialData>;
 pub type ExecuteMsg = ExecuteAccountMsg<SignedCosmosMsgs, SignedAccountActions, CredentialData>;
 pub type QueryMsg = QueryAccountMsg<SignedCosmosMsgs, Empty>;
 pub type MigrateMsg = MigrateAccountMsg;
+
+
+
+pub type InstantiateMsg = ProxyData;

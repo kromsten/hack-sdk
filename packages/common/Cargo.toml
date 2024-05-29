@@ -10,6 +10,7 @@ default = []
 
 [dependencies]
 cw82             = { workspace = true }
+cw83             = { workspace = true }
 cosmwasm-std     = { workspace = true }
 cosmwasm-schema  = { workspace = true }
 cw-ownable       = { workspace = true }

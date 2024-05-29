@@ -13,8 +13,17 @@ pub enum ContractError {
     #[error("Insufficient fee: expected {0}, got {1}")]
     InsufficientFee(u128, u128),
 
+    #[error("Only current chain accounts are supported")]
+    InvalidChainId {},
+
+    #[error("Code id is not allowed")]
+    InvalidCodeId {},
+
     #[error("Account for the given token already exists. Use `reset_account` to overwrite it and `migrate_account` to update it to a newer version")]
     AccountExists {},
+
+    #[error("Unknown reply id: {id:?}")]
+    UnexpectedReplyId { id: u64 },
 
     #[error("Unauthorized")]
     Unauthorized {},

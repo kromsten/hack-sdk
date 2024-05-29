@@ -1,11 +1,14 @@
 #![allow(unused_imports, unused_variables)]
 
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::Binary;
+use cosmwasm_std::{Binary, Empty, Uint64};
 use cw_utils::Expiration;
 use saa::CredentialData;
 
-
+use cw83::{
+    CreateAccountMsg as CreateAccountMsgBase,
+    AccountQuery as AccountQueryBase
+};
 
 
 #[cw_serde]
@@ -41,9 +44,20 @@ pub struct ProxyData {
     pub abstraction_params   :   AbstractionParams,
     /// data used to authenticate a user and authorise for actions in future
     pub auth_data            :   CredentialData,
-    /// additional payload to execute action immdeiately after authentication or account creation
-    pub payload              :   Option<Binary>
+
+    pub extension            :   Option<Empty>
 }
+
+
+#[cw_serde]
+pub struct AccountCredential {
+    pub account_id      :   Option<Uint64>,
+    pub credential_id   :   Option<Binary>,
+}
+
+
+pub type AccountQuery     = AccountQueryBase<AccountCredential>;
+pub type CreateAccountMsg = CreateAccountMsgBase<ProxyData>;
 
 
 pub mod account;
